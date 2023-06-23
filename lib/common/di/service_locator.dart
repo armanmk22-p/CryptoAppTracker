@@ -19,4 +19,5 @@ Future<void> getInitial()async{
 
   //useCase
   locator.registerLazySingleton<GetCoinsUseCase>(() => GetCoinsUseCase(coinRepository: locator()));
+  locator.registerLazySingleton<CoinChartUseCase>(() => CoinChartUseCase(coinRepository: locator()));
 }
