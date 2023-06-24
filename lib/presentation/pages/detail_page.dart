@@ -1,3 +1,4 @@
+import 'package:crypto_tracker_bloc/common/common.dart';
 import 'package:crypto_tracker_bloc/domain/domain.dart';
 import 'package:crypto_tracker_bloc/presentation/manager/bloc/coinchart_bloc/coin_chart_bloc.dart';
 import 'package:fl_chart/fl_chart.dart';
@@ -8,7 +9,7 @@ class DetailPage extends StatefulWidget {
   final String id;
   final CoinEntity coinEntity;
 
-  const DetailPage({super.key, required this.id, required this.coinEntity});
+  const DetailPage({super.key, required this.coinEntity,required this.id});
 
   @override
   State<DetailPage> createState() => _DetailPageState();
@@ -19,9 +20,8 @@ class _DetailPageState extends State<DetailPage> {
   @override
   void initState() {
     super.initState();
-    context
-        .read<CoinChartBloc>()
-        .add(CoinChartEvent(name: widget.coinEntity.name, day: '1'));
+    context.read<CoinChartBloc>().add(CoinChartEvent(name: widget.id, day: '1'));
+
   }
 
   @override
@@ -30,120 +30,111 @@ class _DetailPageState extends State<DetailPage> {
       appBar: AppBar(
         title: const Text('Coin Details'),
       ),
-      body: SafeArea(
-          child:SizedBox(
-                  width: double.infinity,
-                  child: Column(
-                    children: [
-                      const SizedBox(
-                        height: 100,
-                      ),
-                      Align(
-                        alignment: Alignment.topCenter,
-                        child: Text(
-                          widget.coinEntity.name,
-                          style: const TextStyle(
-                              fontWeight: FontWeight.bold, fontSize: 40),
-                        ),
-                      ),
-                      const SizedBox(
-                        height: 100,
-                      ),
-                      SizedBox(
-                        height: 100,
-                        width: double.infinity,
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 0),
-                          child: BlocBuilder<CoinChartBloc, CoinChartState>(
-                            builder: (context, state) {
-                             // if (state is CoinChartLoadingState) {}
-                             // if (state is CoinChartFailureSate) {}
-                               if (state is CoinChartLoadedState) {
-                                 return LineChart(
-                                   LineChartData(
-                                       minX:state.minX,
-                                       minY: state.minY,
-                                       maxX: state.maxX,
-                                       maxY: state.maxY,
-                                       borderData: FlBorderData(
-                                         show: false,
-                                       ),
-                                       titlesData: const FlTitlesData(
-                                         show: false,
-                                       ),
-                                       gridData:
-                                       FlGridData(
-                                           getDrawingHorizontalLine: (value) {
-                                             return const FlLine(
-                                               //color: Color(0Xff37434d),
-                                               strokeWidth: 0,
-                                             );
-                                           }, getDrawingVerticalLine: (value) {
-                                         return const FlLine(strokeWidth: 0);
-                                       }),
-                                       lineBarsData: [
-                                         LineChartBarData(
-                                             spots: state.flSpotList,
-                                             dotData: const FlDotData(show: false),
-                                             isCurved: true,
-                                             barWidth: 4,
-                                             color: Colors.teal,
-                                             belowBarData: BarAreaData(
-                                               show: true,
-                                               color: Colors.teal.withOpacity(0.2),
-                                             )),
-                                       ]),
-                                 );
-                               }
-                               return Container();
-
-                            },
-                          ),
-                        ),
-                      ),
-                      Expanded(
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              ElevatedButton(
-                                  onPressed: () {
-                                    context.read<CoinChartBloc>().add(
-                                        CoinChartEvent(
-                                            name: widget.coinEntity.name,
-                                            day: '1'));
-                                  },
-                                  child: const Text('1d')),
-                              const SizedBox(
-                                width: 8,
-                              ),
-                              ElevatedButton(
-                                  onPressed: () {
-                                    context.read<CoinChartBloc>().add(
-                                        CoinChartEvent(
-                                            name: widget.coinEntity.name,
-                                            day: '15'));
-                                  },
-                                  child: const Text('15d')),
-                              const SizedBox(
-                                width: 8,
-                              ),
-                              ElevatedButton(
-                                  onPressed: () {
-                                    context.read<CoinChartBloc>().add(
-                                        CoinChartEvent(
-                                            name: widget.coinEntity.name,
-                                            day: '30'));
-                                  },
-                                  child: const Text('30d')),
-                              const SizedBox(
-                                width: 8,
-                              ),
-                            ],
-                          )),
-                    ],
-                  ),
-                )
+      body: Column(
+        children: [
+          Align(
+            alignment: Alignment.topCenter,
+            child: Text(
+              widget.coinEntity.name,
+              style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 40),
+            ),
           ),
+          const SizedBox(
+            height: 250,
+          ),
+          SizedBox(
+            width: double.infinity,
+            height: 20,
+            child: BlocBuilder<CoinChartBloc, CoinChartState>(
+              builder: (context, state) {
+                if(state is CoinChartLoadedState){
+                  return LineChart(
+                    LineChartData(
+                      minX: state.minX,
+                      minY: state.minY,
+                      maxX: state.maxX,
+                      maxY: state.maxY,
+                      titlesData: const FlTitlesData(show: false),
+                      borderData: FlBorderData(show: false),
+                      gridData: FlGridData(
+                        getDrawingHorizontalLine: (value) =>
+                        const FlLine(strokeWidth: 0),
+                        getDrawingVerticalLine: (value) =>
+                        const FlLine(strokeWidth: 0),
+                      ),
+                      lineBarsData: [
+                        LineChartBarData(
+                          color: Colors.teal,
+                          barWidth: 2,
+                         // isCurved: true,
+                         // curveSmoothness: 1,
+                          // belowBarData: BarAreaData(
+                          //   color: Colors.teal.withOpacity(0.3),
+                          // ),
+                          spots: state.flSpotList,
+                          dotData: const FlDotData(show: false),
+                        ),
+                      ],
+                    ),
+                  );
+                }
+                return Container();
+              },
+            ),
+          ),
+
+
+          const SizedBox(height: 200,),
+          Expanded(
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  ElevatedButton(
+                    onPressed: () {
+                      context.read<CoinChartBloc>().add(
+                        CoinChartEvent(
+                            name: widget.id,
+                            day: '1'),);
+                    },
+                    child: const Text('1d'),),
+                  const SizedBox(
+                    width: 8,
+                  ),
+                  ElevatedButton(
+                    onPressed: () {
+                      context.read<CoinChartBloc>().add(
+                        CoinChartEvent(
+                            name: widget.id,
+                            day: '15'),);
+                    },
+                    child: const Text('15d'),),
+                  const SizedBox(
+                    width: 8,
+                  ),
+                  ElevatedButton(
+                    onPressed: () {
+
+                      context.read<CoinChartBloc>().add(
+                        CoinChartEvent(
+                            name: widget.id,
+                            day: '30'),);
+                    },
+                    child: const Text('30d'),),
+                  const SizedBox(
+                    width: 8,
+                  ),
+                ],
+              )),
+
+        ],
+      ),
     );
   }
+}
+
+class PriceAndTime {
+  late int time;
+  late double price;
+
+  PriceAndTime({required this.time, required this.price});
 }

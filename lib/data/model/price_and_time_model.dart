@@ -16,7 +16,8 @@ class PriceAndTimeModel extends PriceAndTimeEntity {
   //
   //    return PriceAndTimeModel(time: coinChartModel.prices[0] as int, price: coinChartModel.prices[1] as double);
 
-  factory PriceAndTimeModel.fromJson(Map<String, dynamic> json) {
-    return PriceAndTimeModel(time: json['prices'][0], price: json['prices'][1]);
-  }
+  // factory PriceAndTimeModel.fromJson(List x) {
+  //  // return PriceAndTimeModel(time: json['prices'][0], price: json['prices'][1]);
+  //   return PriceAndTimeModel(time: x[0] as int, price: x[1] as double);
+  // }
 }

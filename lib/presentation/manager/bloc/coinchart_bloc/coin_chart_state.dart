@@ -22,14 +22,14 @@ class CoinChartLoadingState extends CoinChartState {
 
 class CoinChartLoadedState extends CoinChartState {
 
- // final bool isFirstTime;
-  final List<FlSpot> flSpotList;
-  final double minX;
-  final double maxX;
-  final double minY;
-  final double maxY;
 
-  const CoinChartLoadedState({
+   List<FlSpot> flSpotList=[];
+   double minX=0.0;
+   double maxX=0.0;
+   double minY=0.0;
+   double maxY=0.0;
+
+   CoinChartLoadedState({
     //required this.isLoading,
   //  required this.isFirstTime,
     required this.flSpotList,

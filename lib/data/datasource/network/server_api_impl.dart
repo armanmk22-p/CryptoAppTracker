@@ -5,7 +5,8 @@ import '../../data.dart';
 
 
 class ServerApiImpl implements ServerApi {
-  const ServerApiImpl({
+  List<PriceAndTimeModel> priceAndTimeList=[];
+   ServerApiImpl({
     required this.dioClient,
   });
 
@@ -44,9 +45,16 @@ class ServerApiImpl implements ServerApi {
 
   Future<List<PriceAndTimeModel>> getCoinChart(String coinName, String day) async{
     try{
-      final Response response = await Dio().get(ApiConstants.marketChart(coinName, day));
-      final chartData =(response.data['prices'] as List).map((e) => PriceAndTimeModel.fromJson(e)).toList();
-      return chartData;
+      final Response response = await Dio().get('https://api.coingecko.com/api/v3/coins/$coinName/market_chart?vs_currency=usd&days=$day');
+     if(response.statusCode == 200){
+       List chartData  =(response.data['prices'] as List).map((e) =>e).toList();
+       List<PriceAndTimeModel> priceAndTimeList = chartData.map((e) => PriceAndTimeModel(time: e[0] as int , price: e[1] as double)).toList();
+       return priceAndTimeList;
+     }
+   //   final chartData =(response.data['prices'] as List).map((e) => PriceAndTimeModel.fromJson(e)).toList();
+     // final chartData =(response.data['prices'] as List).map((e) => PriceAndTimeModel(time: e[0] as int, price: e[1] as double)).toList();
+      return priceAndTimeList;
+
     } on DioExceptions catch(e){
       final errorMessage = DioExceptions.fromDioError(e as DioException).toString();
       throw errorMessage;

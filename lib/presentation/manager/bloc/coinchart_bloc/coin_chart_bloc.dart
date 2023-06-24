@@ -11,7 +11,7 @@ part 'coin_chart_state.dart';
 
 class CoinChartBloc extends Bloc<CoinChartEvent, CoinChartState> {
   final CoinChartUseCase coinChartUseCase;
-  final flSpotList = [];
+  List<FlSpot> flSpotList = [];
   List<PriceAndTimeEntity> priceAndTime = [];
 
   CoinChartBloc({required this.coinChartUseCase}) : super(CoinChartInitial()) {
@@ -24,20 +24,22 @@ class CoinChartBloc extends Bloc<CoinChartEvent, CoinChartState> {
     final result = await coinChartUseCase.call(event.name, event.day);
     result.fold((l) => null,
             (r) {
-              priceAndTime = r;
-              priceAndTime.sort((a, b) => a.price.compareTo(b.price));
+
+               flSpotList = [];
+               priceAndTime = r;
+
               for (var element in priceAndTime) {
                 flSpotList.add(FlSpot(element.time.toDouble(), element.price),);
               }
+
               emit(CoinChartLoadedState(
-                // isFirstTime: true,
-                flSpotList: flSpotList as List<FlSpot>,
+                flSpotList: flSpotList,
                 minX: priceAndTime.first.time.toDouble(),
                 maxX: priceAndTime.last.time.toDouble(),
                 minY: priceAndTime.first.price,
                 maxY: priceAndTime.last.price,
               ));
-              emit(const CoinChartLoadingState(isLoading: false));
+              // priceAndTime.sort((a, b) => a.price.compareTo(b.price));
             });
 
   }
