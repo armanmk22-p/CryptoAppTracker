@@ -131,10 +131,3 @@ class _DetailPageState extends State<DetailPage> {
     );
   }
 }
-
-class PriceAndTime {
-  late int time;
-  late double price;
-
-  PriceAndTime({required this.time, required this.price});
-}
