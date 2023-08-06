@@ -9,15 +9,15 @@ final locator = GetIt.instance;
 
 Future<void> getInitial()async{
 
-  //class
+  ///class
   locator.registerLazySingleton<Dio>(() => Dio());
   locator.registerLazySingleton<DioClient>(() => DioClient(locator()));
 
-  //repository
+  ///repository
   locator.registerLazySingleton<ServerApi>(() => ServerApiImpl(dioClient: locator()));
   locator.registerLazySingleton<CoinRepository>(() => CoinRepositoryImpl(serverApi: locator()));
 
-  //useCase
+  ///useCase
   locator.registerLazySingleton<GetCoinsUseCase>(() => GetCoinsUseCase(coinRepository: locator()));
   locator.registerLazySingleton<CoinChartUseCase>(() => CoinChartUseCase(coinRepository: locator()));
 }
